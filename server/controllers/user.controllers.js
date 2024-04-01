@@ -20,51 +20,53 @@ module.exports.register = (req, res) => {
     .catch(err => res.json(err));
 
 }
-
-module.exports.login= async(req, res) => {
+module.exports.login = async (req, res) => {
+    console.log(req.body.password);
     const user = await User.findOne({ email: req.body.email });
-    console.log(`${process.env.FIRST_SECRET_KEY}`);
-    if(user === null) {
-        // email not found in users collection
-        return res.sendStatus(400);
+
+    if (user === null) {
+    return res.status(400).json({
+        errors: { email: { message: "There is no user with this email" } },
+    });
     }
- 
-    // if we made it this far, we found a user with this email address
-    // let's compare the supplied password to the hashed password in the database
-    const correctPassword = await bcrypt.compare(req.body.password, user.password);
- 
-    if(!correctPassword) {
-        // password wasn't a match!
-        return res.sendStatus(400);
+    console.log(user.password);
+
+    const correctPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+    );
+    console.log(correctPassword);
+    if (!correctPassword) {
+        return res
+        .status(400)
+        .json({ errors: { password: { message: "The password is incorrect" } } });
     }
- 
-    // if we made it this far, the password was correct
-    // {id: 21312312312312} from askldjaoisjdpasjdopajas
-    const userToken = jwt.sign({
-        id: user._id
-    }, "first key value");
- 
-    // note that the response object allows chained calls to cookie and json
+
+    console.log("Err");
+    const userToken = jwt.sign(
+        {
+        id: user._id,
+        },
+        process.env.SECRET_KEY
+    );
+
     res
-        .cookie("usertoken", userToken, {
-            httpOnly: true
-        })
-        .json({ msg: "success!", user: user});
-}
+    .cookie("usertoken", userToken, {httpOnly: true,})
+    .json({ msg: "success!" , user:user});
+};
 module.exports.getUserById = (req, res) => {
     User.findById(req.params.id)
-      .then(user => {
+        .then(user => {
         if (!user) {
-          return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found' });
         }
         res.json(user);
-      })
-      .catch(error => {
+        })
+        .catch(error => {
         console.error(error);
         res.status(400).json({ error: 'Bad request' });
-      });
-  };
-
+        });
+};
 
 module.exports.logout= (req, res) => {
     res.clearCookie('usertoken');

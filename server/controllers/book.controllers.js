@@ -55,15 +55,28 @@ module.exports.updateBook = (request, response) => {
     .catch(err => response.status(400).json(err));
 };
 
+// module.exports.likeBook = (request, response) => {
+//   Book.findOneAndUpdate(
+    
+//       {_id: request.params.id},
+//       {$inc: {likes: 1}}
+//   )
+//   .then(() => response.json({msg: "Book liked successfully"}))
+//   .catch(err => response.status(400).json(err));
+// };
 module.exports.likeBook = (request, response) => {
-  Book.findOneAndUpdate(
-      {_id: request.params.id},
-      {$inc: {likes: 1}}
-  )
-  .then(() => response.json({msg: "Book liked successfully"}))
-  .catch(err => response.status(400).json(err));
+  
+  Book.findById(request.params.id)
+    .then(book => {
+      if (!book) {
+        return response.status(404).json({ error: 'Book not found' });
+      }
+      book.likes += 1;
+      return book.save();
+    })
+    .then(() => response.json({ msg: "Book liked successfully" }))
+    .catch(err => response.status(400).json(err));
 };
-
 
 module.exports.deleteBook = (request, response) => {
   Book.findOneAndDelete({ _id: request.params.id })

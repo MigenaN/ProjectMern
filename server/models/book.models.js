@@ -21,10 +21,13 @@ const bookSchema = new mongoose.Schema({
   likes: {
     type: Number,
     default: 0
+    
   },
-  state:{ type: String,
-    required: [true, "State is required"],
-    default: "favourite"},
+  imageUrl: {
+    type: String,
+    required: true
+  },
+  
   uploader: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

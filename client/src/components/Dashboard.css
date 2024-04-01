@@ -1,0 +1,27 @@
+/* Dashboard.css */
+
+/* Custom styles for the dashboard container */
+.dashboard-container {
+    background: rgb(239, 227, 239);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Custom styles for the header */
+  .dashboard-header {
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Custom styles for the footer */
+  .dashboard-footer {
+    margin-top: 20px;
+  }
+  
+  /* Additional custom styles */
+  
